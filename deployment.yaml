@@ -17,11 +17,10 @@ spec:
       nodeSelector:
         kubernetes.io/arch: amd64
       containers:
-      - name: fastapi-app
-        image: shugopl/pythonproject:v0.1
-        imagePullPolicy: Always
+      - name: fastapi-app 
+        image: ghcr.io/shugopl/fastapi-app:latest
         ports:
-        - containerPort: 8000
+          - containerPort: 8000
         resources:
           limits:
             cpu: "500m"
@@ -46,5 +45,3 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8000
-  type: ClusterIP  # Change to ClusterIP if you're using an Ingress
