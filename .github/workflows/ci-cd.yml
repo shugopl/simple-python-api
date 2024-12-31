@@ -30,6 +30,13 @@ jobs:
         run: |
           docker push ghcr.io/${{ github.actor }}/fastapi-app:${{ github.sha }}
           docker push ghcr.io/${{ github.actor }}/fastapi-app:latest
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: unnecessary
+          if_key_exists: replace
       
       - name: Set up Kubectl
         uses: azure/setup-kubectl@v3
