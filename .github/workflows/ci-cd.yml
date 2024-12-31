@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.actor }}/fastapi-app:${{ github.sha }} .
+          docker tag ghcr.io/${{ github.actor }}/fastapi-app:${{ github.sha }} ghcr.io/${{ github.actor }}/fastapi-app:latest
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ github.actor }}/fastapi-app:${{ github.sha }}
+          docker push ghcr.io/${{ github.actor }}/fastapi-app:latest
+      
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+
+      - name: Configure Kubeconfig
+        run: echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+
+      - name: Deploy to K3s
+        run: |
+          kubectl apply -f deployment.yaml
+
+
+  
