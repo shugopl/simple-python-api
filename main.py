@@ -1,9 +1,15 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
 
 # Create FastAPI instance
 app = FastAPI()
+
+router = APIRouter(
+    prefix="/py",  # Główny prefiks dla wszystkich endpointów
+    tags=["api"],  # Tag dla dokumentacji Swagger
+    responses={404: {"description": "Not found"}},
+)
 
 # Define data models
 class InputData(BaseModel):
@@ -17,7 +23,7 @@ class ResponseData(BaseModel):
     message: str
 
 # Keep the existing GET endpoint
-@app.get("/")
+@app.get("/hello")
 def hello():
     return "Hello from FastAPI with CI/CD"
 
@@ -63,3 +69,5 @@ async def analyze_data(input_data: Dict[str, Any]):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+app.include_router(router)
