@@ -23,12 +23,12 @@ class ResponseData(BaseModel):
     message: str
 
 # Keep the existing GET endpoint
-@app.get("/hello")
+@router.get("/hello")
 def hello():
     return "Hello from FastAPI with CI/CD"
 
 # Add new POST endpoint
-@app.post("/process", response_model=ResponseData)
+@router.post("/process", response_model=ResponseData)
 async def process_data(input_data: InputData):
     try:
         # Process the input data
@@ -48,7 +48,7 @@ async def process_data(input_data: InputData):
         raise HTTPException(status_code=400, detail=str(e))
 
 # Add endpoint for specific data processing
-@app.post("/analyze")
+@router.post("/analyze")
 async def analyze_data(input_data: Dict[str, Any]):
     try:
         # Example of data validation
