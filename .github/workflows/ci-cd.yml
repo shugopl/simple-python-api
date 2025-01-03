@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+   
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -30,13 +30,6 @@ jobs:
         run: |
           docker push ghcr.io/${{ github.actor }}/fastapi-app:${{ github.sha }}
           docker push ghcr.io/${{ github.actor }}/fastapi-app:latest
-
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: unnecessary
-          if_key_exists: replace
       
       - name: Set up Kubectl
         uses: azure/setup-kubectl@v3
@@ -47,9 +40,6 @@ jobs:
         run: |
           mkdir -p $HOME/.kube && echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
         
-      - name: Deploy to K3s
-        run: |
-          kubectl apply -f deployment.yaml
-
-
-  
+      # - name: Deploy to K3s
+      #   run: |
+      #     kubectl apply -f deployment.yaml
