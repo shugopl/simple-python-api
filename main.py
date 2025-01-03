@@ -70,4 +70,8 @@ async def analyze_data(input_data: Dict[str, Any]):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 
+@router.get("/liveness")
+async def liveness():
+    return {"status": "alive"}
+
 app.include_router(router)
